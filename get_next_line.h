@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 03:56:51 by phanna            #+#    #+#             */
-/*   Updated: 2017/05/21 06:17:53 by phanna           ###   ########.fr       */
+/*   Updated: 2017/05/22 14:48:38 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,11 +22,11 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-typedef struct		s_box
+/*typedef struct		s_box
 {
 	int				fd;
 	static char		*buff;
 	struct s_box	*next;
-}					t_box;
+}					t_box;*/
 int	get_next_line(const int fd, char **line);
 #endif
