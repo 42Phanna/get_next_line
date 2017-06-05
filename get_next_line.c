@@ -6,43 +6,35 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 04:14:32 by phanna            #+#    #+#             */
-/*   Updated: 2017/05/24 11:11:37 by phanna           ###   ########.fr       */
+/*   Updated: 2017/06/05 05:47:39 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-int	ft_check_box(char **box, char *buff, char **line)
+
+int	ft_check_box(char *box, char **line)
 {
 	int		i;
 	int		j;
-	int		tmpi;
+	char	*rest = NULL;
 
 	i = 0;
-	j = 0;
-	while (((*box)[i]) != '\n')
+	j = -1;
+	rest = ft_memalloc(4096);
+	while (box[i] && box[i] != '\n')
 		++i;
-	tmpi = i;
-	if ((*box)[i] == '\n')
-	{
-		i = 0;
-		while (i < tmpi)
-		{
-			(*line)[i] = (*box)[i];
-			++i;
-		}
-	}
-	while((j < ft_strlen(*box)) && (*box)[i + 1])
-	{
-		(*box)[j] = (*box)[i + 1];
-		++j;
-		++i;
-	}
-	ft_strclr(*box + j);
+	if (box[i] == '\n')
+		*line = ft_strsub(box, 0, i);
+	while (box[++i])
+		rest[++j] = box[i];
+	rest[j] = '\0';
+	ft_strcpy(box, rest);
 	if (*line)
 		return (1);
 	return (0);
 }
+
 
 // STRUCT SOON MAYBE //
 
@@ -54,26 +46,15 @@ int	get_next_line(const int fd, char **line)
 
 	if (!box)
 		box = ft_memalloc(1);
-	while ((ret = read(fd, buff, BUFF_SIZE + 1)) > 0)
+	while ((ret = read(fd, buff, BUFF_SIZE)) > 0)
 	{
 		buff[ret] = '\0';
 		box = ft_strjoin(box, buff);
-		if (ft_check_box(&box, buff, line) == 1)
+		if (ft_check_box(box, line) == 1)
 		{
 			ft_putstr(box);
 			return (1);
 		}
 	}
 	return (0);
-}
-
-int		main(int ac, char **av)
-{
-	char	*line;
-	int		fd;
-
-	line = ft_memalloc(BUFF_SIZE);
-	fd = open(av[1], O_RDONLY);
-	get_next_line(fd, &line);
-	return(0);
 }

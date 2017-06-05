@@ -1,32 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/05/19 03:56:51 by phanna            #+#    #+#             */
-/*   Updated: 2017/05/24 13:07:37 by phanna           ###   ########.fr       */
+/*   Created: 2017/06/05 05:09:01 by phanna            #+#    #+#             */
+/*   Updated: 2017/06/05 05:47:05 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# define BUFF_SIZE 4096
+#include "get_next_line.h"
 
-# include <sys/types.h>
-# include <sys/uio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include "libft/libft.h"
-#include <stdio.h>
-#include <fcntl.h>
-
-/*typedef struct		s_box
+int	main(int ac, char **av)
 {
-	int				fd;
-	static char		*buff;
-	struct s_box	*next;
-}					t_box;*/
-int	get_next_line(const int fd, char **line);
-#endif
+	char	*line;
+	int		fd;
+
+	ac = 0;
+	line = ft_memalloc(BUFF_SIZE);
+	fd = open(av[1], O_RDONLY);
+	get_next_line(fd, &line);
+	get_next_line(fd, &line);
+	get_next_line(fd, &line);
+	return (0);
+}

@@ -1,32 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/05/19 03:56:51 by phanna            #+#    #+#             */
-/*   Updated: 2017/05/24 13:07:37 by phanna           ###   ########.fr       */
+/*   Created: 2017/06/04 23:41:31 by phanna            #+#    #+#             */
+/*   Updated: 2017/06/05 01:28:48 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
-# define BUFF_SIZE 4096
+#include "get_next_line.h"
 
-# include <sys/types.h>
-# include <sys/uio.h>
-# include <unistd.h>
-# include <stdlib.h>
-# include "libft/libft.h"
-#include <stdio.h>
-#include <fcntl.h>
-
-/*typedef struct		s_box
+char	*ft_readncheck(t_box stock)
 {
-	int				fd;
-	static char		*buff;
-	struct s_box	*next;
-}					t_box;*/
-int	get_next_line(const int fd, char **line);
-#endif
+	int	ret;
+
+	while(ret = read(stock->fd, ))
+}
+
+int		get_next_line(const int fd, char **line)
+{
+	
+}
