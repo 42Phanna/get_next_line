@@ -21,10 +21,10 @@ t_box	*fd_select(const int fd, t_box **box)
 		ft_putstr("Box de ce fd n'existe pas: ");
 		ft_putnbr(fd);
 		ft_putendl("");
-		if (!((*box) = (t_box *)malloc(sizeof(t_box))) &&
+		if (!((*box) = (t_box *)malloc(sizeof(t_box))) ||
 			!((*box)->buff = (char *)ft_memalloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
-		ft_putstr("malloc_OK");
+		ft_putendl("malloc_OK");
 		(*box)->fd = (int)fd;
 		(*box)->next = NULL;
 		return (*box);
@@ -34,7 +34,7 @@ t_box	*fd_select(const int fd, t_box **box)
 		bro_tips = bro_tips->next;
 	if (bro_tips->fd != fd)
 	{
-		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))) &&
+		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))) ||
 			!(bro_tips->buff = (char *)malloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
 		bro_tips->fd = (int)fd;
@@ -45,43 +45,35 @@ t_box	*fd_select(const int fd, t_box **box)
 	return (bro_tips);
 }
 
-int		gnl_check(char *buff, char **line)
+int		gnl_read(t_box *box, char **line)
 {
-	int	i;
+	int	ret;
+	char	buffer[BUFF_SIZE + 1];
 
-	i = -1;
-	while (buff[++i])
+	ft_putendl("in_GNL_read");
+	while ((ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
-		if (buff[i] == '\n')
+		buffer[ret] = '\0';
+//		ft_putstr(buffer);
+		box->buff = ft_strjoin(box->buff, buffer);
+		ft_putstr(box->buff);
+		if(ft_strchr(box->buff, '\n'))
 		{
-			*line = ft_memcpy(*line, buff, i);
-
-			return (0);
+			return (1);
 		}
 	}
-	return (1);
+	return(-1);
 }
 
 int		get_next_line(const int fd, char **line)
 {
-	int				f;
-	int				ret;
-	t_box			*first;
+	t_box		*first;
 	static t_box	*box = NULL;
 
+	first = NULL;
 	box = fd_select(fd, &first);
-	ft_putendl("");
-	ft_putstr("box->fd = ");
-	ft_putnbr(box->fd);
-	ft_putendl("");
 	ft_putendl("fd_select_OK");
-	ft_putendl(box->buff);
-	while ((ret = read(box->fd, box->buff, 4096 + 1)))
-	{
-//		ft_putendl(box->buff);
-		ft_putnbr(ret);
-		box->buff[ret] = '\0';
-		f = gnl_check(box->buff, line);
-	}
+	if (gnl_read(box, line) == 1)
+		return (1);
 	return (0);
 }

@@ -16,12 +16,14 @@ int	main(int ac, char **av)
 {
 	char	*line;
 	int		fd;
+	int		fd2;
 
 	ac = 0;
 	line = ft_memalloc(BUFF_SIZE);
 	fd = open(av[1], O_RDONLY);
+//	fd = open(av[2], O_RDONLY);
 	get_next_line(fd, &line);
-//	get_next_line(fd, &line);
+//	get_next_line(fd2, &line);
 //	get_next_line(fd, &line);
 	return (0);
 }
