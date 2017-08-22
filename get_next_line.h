@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 03:56:51 by phanna            #+#    #+#             */
-/*   Updated: 2017/08/01 09:17:16 by phanna           ###   ########.fr       */
+/*   Updated: 2017/08/22 05:59:29 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,6 @@ typedef struct		s_box
 }					t_box;
 
 int					get_next_line(const int fd, char **line);
-t_box				*fd_select(const int fd, t_box **box);
+static t_box				*fd_select(const int fd, t_box **first);
 
 #endif
