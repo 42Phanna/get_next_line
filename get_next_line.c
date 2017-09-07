@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 04:14:32 by phanna            #+#    #+#             */
-/*   Updated: 2017/09/07 11:07:40 by phanna           ###   ########.fr       */
+/*   Updated: 2017/09/07 17:16:45 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static t_box	*fd_select(const int fd, t_box **first)
 	if (bro_tips->fd != fd)
 	{
 		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))) ||
-				!(bro_tips->buff = (char *)malloc(BUFF_SIZE + 1)))
+				!(bro_tips->buff = (char *)ft_memalloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
 		bro_tips->fd = (int)fd;
 		bro_tips->next = *first;
@@ -54,7 +54,7 @@ char			*ft_strccpy(char *dst, char *src, char c)
 	return (dst);
 }
 
-int				ft_test(t_box *box, char **line)
+int				ft_found_eol(t_box *box, char **line)
 {
 	if (!(ft_strchr(box->buff, '\n')))
 		return (0);
@@ -70,14 +70,25 @@ int				gnl_read(t_box *box, char **line)
 {
 	int		ret;
 	char	buffer[BUFF_SIZE + 1];
+	char	*tmp;
 
-	if (ft_test(box, line))
+	if (ft_found_eol(box, line))
 		return (1);
+	tmp = NULL;
 	while ((ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
 		buffer[ret] = '\0';
+		ft_putstr("box->buff = ");
+		ft_putendl(box->buff);
+		tmp = box->buff;
+		ft_putstr("tmp = ");
+		ft_putendl(tmp);
 		box->buff = ft_strjoin(box->buff, buffer);
-		if (ft_test(box, line))
+		ft_putendl("bef_free");
+		if (tmp)
+			free(tmp);
+		ft_putendl("af_free");
+		if (ft_found_eol(box, line))
 			return (1);
 	}
 	return (0);
