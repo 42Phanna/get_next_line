@@ -6,14 +6,14 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 03:56:51 by phanna            #+#    #+#             */
-/*   Updated: 2017/08/22 06:37:45 by phanna           ###   ########.fr       */
+/*   Updated: 2017/09/05 17:45:50 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFF_SIZE 4096
+# define BUFF_SIZE 16
 
 # include <sys/types.h>
 # include <sys/uio.h>
@@ -31,6 +31,5 @@ typedef struct		s_box
 }					t_box;
 
 int					get_next_line(const int fd, char **line);
-static t_box				*fd_select(const int fd, t_box **first);
 
 #endif

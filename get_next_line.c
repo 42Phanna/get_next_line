@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 04:14:32 by phanna            #+#    #+#             */
-/*   Updated: 2017/08/22 06:37:42 by phanna           ###   ########.fr       */
+/*   Updated: 2017/09/07 11:07:40 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ static t_box	*fd_select(const int fd, t_box **first)
 
 	if (!(*first))
 	{
-		if (!((*first) = (t_box *)malloc(sizeof(t_box))) || !((*first)->buff = (char *)ft_memalloc(BUFF_SIZE + 1)))
+		if (!((*first) = (t_box *)malloc(sizeof(t_box))) ||
+				!((*first)->buff = (char *)ft_memalloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
 		(*first)->fd = (int)fd;
 		(*first)->next = NULL;
@@ -29,7 +30,8 @@ static t_box	*fd_select(const int fd, t_box **first)
 		bro_tips = bro_tips->next;
 	if (bro_tips->fd != fd)
 	{
-		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))) || !(bro_tips->buff = (char *)malloc(BUFF_SIZE + 1)))
+		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))) ||
+				!(bro_tips->buff = (char *)malloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
 		bro_tips->fd = (int)fd;
 		bro_tips->next = *first;
@@ -39,42 +41,61 @@ static t_box	*fd_select(const int fd, t_box **first)
 	return (bro_tips);
 }
 
-char			*gnl_read(t_box *box, char *line)
+char			*ft_strccpy(char *dst, char *src, char c)
+{
+	int	i;
+
+	i = 0;
+	while (src[i] && src[i] != c)
+		++i;
+	if (!(dst = (char *)malloc(sizeof(char) * (i + 1))))
+		return (0);
+	dst = ft_strncpy(dst, src, i);
+	return (dst);
+}
+
+int				ft_test(t_box *box, char **line)
+{
+	if (!(ft_strchr(box->buff, '\n')))
+		return (0);
+	*line = ft_strccpy(*line, box->buff, '\n');
+	ft_putstr("LINE = ");
+	ft_putendl(*line);
+	box->buff = ft_strchr(box->buff, '\n');
+	++box->buff;
+	return (1);
+}
+
+int				gnl_read(t_box *box, char **line)
 {
 	int		ret;
-	char	*str;
 	char	buffer[BUFF_SIZE + 1];
 
+	if (ft_test(box, line))
+		return (1);
 	while ((ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
 		buffer[ret] = '\0';
 		box->buff = ft_strjoin(box->buff, buffer);
-		ft_putendl(box->buff);
-		if ((str = ft_strchr(box->buff, '\n')))
-		{
-			ft_putstr("str =");
-			ft_putstr(str);
-			return (str);
-		}
+		if (ft_test(box, line))
+			return (1);
 	}
 	return (0);
 }
 
 int				get_next_line(const int fd, char **line)
 {
-	t_box			*first;
-	static t_box	*box = NULL;
+	static t_box	*first = NULL;
+	t_box			*box;
+	int				res;
 
-	if(box == NULL)
-		first = NULL;
+	ft_putendl("FUNCTION CALL");
 	box = fd_select(fd, &first);
-	if (((*line) = gnl_read(box, *line)))
-	{
-		ft_putstr("line: ");
-		ft_putendl(*line);
-		ft_putstr("box->buff: ");
-		ft_putstr(box->buff);
-		return (1);
-	}
-	return (0);
+	if (fd < 0 || !line || !box)
+		return (-1);
+	ft_putendl("FD_SELECT OK");
+	res = gnl_read(box, line);
+//	ft_putstr("BOX->BUFF = ");
+//	ft_putstr(box->buff);
+	return (res);
 }
