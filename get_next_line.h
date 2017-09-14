@@ -6,22 +6,22 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 03:56:51 by phanna            #+#    #+#             */
-/*   Updated: 2017/09/07 17:16:50 by phanna           ###   ########.fr       */
+/*   Updated: 2017/09/14 15:02:23 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-# define BUFF_SIZE 16
+# define BUFF_SIZE 4095
 
 # include <sys/types.h>
 # include <sys/uio.h>
 # include <unistd.h>
 # include <stdlib.h>
 # include "libft/libft.h"
-#include <stdio.h>
-#include <fcntl.h>
+# include <stdio.h>
+# include <fcntl.h>
 
 typedef struct		s_box
 {

@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 04:14:32 by phanna            #+#    #+#             */
-/*   Updated: 2017/09/09 17:04:59 by phanna           ###   ########.fr       */
+/*   Updated: 2017/09/14 15:53:41 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,10 @@ static t_box	*fd_select(const int fd, t_box **first)
 	t_box	*bro_tips;
 
 	if (!(*first))
-	{
-		if (!((*first) = (t_box *)malloc(sizeof(t_box))))
+	{		
+		if (!((*first) = (t_box *)malloc(sizeof(t_box))) || 
+			!((*first)->buff = (char *)malloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
-		(*first)->buff = NULL;
 		(*first)->fd = (int)fd;
 		(*first)->next = NULL;
 		return (*first);
@@ -30,9 +30,9 @@ static t_box	*fd_select(const int fd, t_box **first)
 		bro_tips = bro_tips->next;
 	if (bro_tips->fd != fd)
 	{
-		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))))
+		if (!(bro_tips = (t_box *)malloc(sizeof(t_box))) ||
+			!(bro_tips->buff = (char *)malloc(BUFF_SIZE + 1)))
 			exit(EXIT_FAILURE);
-		bro_tips->buff = NULL;
 		bro_tips->fd = (int)fd;
 		bro_tips->next = *first;
 		*first = bro_tips;
@@ -52,7 +52,8 @@ char			*ft_strcdup(char *dst, char *src, char c)
 	{
 		if (!(dst = ft_memalloc(i + 1)))
 			return (0);
-		dst = ft_strncpy(dst, src, i + 1);
+		dst = ft_strncpy(dst, src, i);
+		dst[i] = '\0';
 		return (dst);
 	}
 	return (0);
@@ -60,15 +61,12 @@ char			*ft_strcdup(char *dst, char *src, char c)
 
 int				ft_found_eol(t_box *box, char **line)
 {
-	ft_putendl("IN_FOUND");
 	if (!box->buff || !(ft_strchr(box->buff, '\n')))
-	{
-		ft_putendl("NOT_FOUND");
 		return (0);
-	}
 	*line = ft_strcdup(*line, box->buff, '\n');
 	box->buff = ft_strchr(box->buff, '\n');
-	++box->buff;
+	if ((box->buff)[0])
+		++box->buff;
 	return (1);
 }
 
@@ -76,28 +74,31 @@ int				gnl_read(t_box *box, char **line)
 {
 	int		ret;
 	char	buffer[BUFF_SIZE + 1];
-	char	*tmp;
 
-	ft_putendl("IN_GNL_READ");
 	if (ft_found_eol(box, line))
 		return (1);
-	ft_putendl("FIRST_TEST_NOT_FOUND");
-	tmp = NULL;
+	if (!(ret = read(box->fd, buffer, BUFF_SIZE)))
+	{
+		if (!box->buff[0])
+			return (0);
+		*line = ft_strcdup(*line, box->buff, '\0');
+		box->buff[0] = '\0';
+		return (1);
+	}
+	buffer[ret] = '\0';
+	box->buff = ft_strjoin(box->buff, buffer);
+	if (ft_found_eol(box, line))
+		return (1);
 	while ((ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
 		buffer[ret] = '\0';
-		ft_putendl(box->buff);
-		tmp = box->buff;
-		if (!box->buff)
-			box->buff = buffer;
-		else
-			box->buff = ft_strjoin(box->buff, buffer);
-		ft_putendl(box->buff);
-		free(tmp);
+		box->buff = ft_strjoin(box->buff, buffer);
 		if (ft_found_eol(box, line))
 			return (1);
 	}
-	return (0);
+	*line = ft_strcdup(*line, box->buff, '\0');
+	box->buff[0] = '\0';
+	return (1);
 }
 
 int				get_next_line(const int fd, char **line)
@@ -105,11 +106,13 @@ int				get_next_line(const int fd, char **line)
 	static t_box	*first = NULL;
 	t_box			*box;
 	int				res;
-
-	box = fd_select(fd, &first);
-	ft_putendl("FT_SELECT_OK");
-	if (fd < 0 || !line || !box)
+	char			test[0];
+	
+	if (fd < 0 || !line || read(fd, test, 0) < 0)
+		return (-1);
+	if (!(box = fd_select(fd, &first)))
 		return (-1);
 	res = gnl_read(box, line);
+	//printf("line [%s]\n", *line);
 	return (res);
 }
