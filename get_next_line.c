@@ -6,13 +6,13 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 04:14:32 by phanna            #+#    #+#             */
-/*   Updated: 2017/09/14 15:53:41 by phanna           ###   ########.fr       */
+/*   Updated: 2017/09/20 17:09:49 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-static t_box	*fd_select(const int fd, t_box **first)
+static t_box	*fds(const int fd, t_box **first)
 {
 	t_box	*bro_tips;
 
@@ -75,13 +75,11 @@ int				gnl_read(t_box *box, char **line)
 	int		ret;
 	char	buffer[BUFF_SIZE + 1];
 
-	if (ft_found_eol(box, line))
-		return (1);
 	if (!(ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
 		if (!box->buff[0])
 			return (0);
-		*line = ft_strcdup(*line, box->buff, '\0');
+//		*line = ft_strcdup(*line, box->buff, '\0');
 		box->buff[0] = '\0';
 		return (1);
 	}
@@ -108,11 +106,10 @@ int				get_next_line(const int fd, char **line)
 	int				res;
 	char			test[0];
 	
-	if (fd < 0 || !line || read(fd, test, 0) < 0)
+	if (fd < 0 || !line || read(fd, test, 0) < 0 || !(box = fds(fd, &first)))
 		return (-1);
-	if (!(box = fd_select(fd, &first)))
-		return (-1);
+	if (ft_found_eol(box, line))
+		return (1);
 	res = gnl_read(box, line);
-	//printf("line [%s]\n", *line);
 	return (res);
 }
