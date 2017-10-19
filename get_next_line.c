@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/19 04:14:32 by phanna            #+#    #+#             */
-/*   Updated: 2017/09/20 17:09:49 by phanna           ###   ########.fr       */
+/*   Updated: 2017/10/19 09:34:13 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,24 +73,29 @@ int				ft_found_eol(t_box *box, char **line)
 int				gnl_read(t_box *box, char **line)
 {
 	int		ret;
+	char	*tmp;
 	char	buffer[BUFF_SIZE + 1];
 
 	if (!(ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
 		if (!box->buff[0])
 			return (0);
-//		*line = ft_strcdup(*line, box->buff, '\0');
+		*line = ft_strcdup(*line, box->buff, '\0');
 		box->buff[0] = '\0';
 		return (1);
 	}
 	buffer[ret] = '\0';
+	tmp = box->buff;
 	box->buff = ft_strjoin(box->buff, buffer);
+	free(tmp);
 	if (ft_found_eol(box, line))
 		return (1);
 	while ((ret = read(box->fd, buffer, BUFF_SIZE)))
 	{
 		buffer[ret] = '\0';
+		tmp = box->buff;
 		box->buff = ft_strjoin(box->buff, buffer);
+		free(tmp);
 		if (ft_found_eol(box, line))
 			return (1);
 	}
@@ -103,13 +108,11 @@ int				get_next_line(const int fd, char **line)
 {
 	static t_box	*first = NULL;
 	t_box			*box;
-	int				res;
 	char			test[0];
 	
 	if (fd < 0 || !line || read(fd, test, 0) < 0 || !(box = fds(fd, &first)))
 		return (-1);
 	if (ft_found_eol(box, line))
 		return (1);
-	res = gnl_read(box, line);
-	return (res);
+	return(gnl_read(box, line));
 }

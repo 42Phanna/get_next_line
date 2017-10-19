@@ -6,7 +6,7 @@
 /*   By: phanna <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/05 05:09:01 by phanna            #+#    #+#             */
-/*   Updated: 2017/09/20 16:39:59 by phanna           ###   ########.fr       */
+/*   Updated: 2017/10/19 09:36:43 by phanna           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	main(int ac, char **av)
 	fd = open(av[1], O_RDONLY);
 	while ((res = get_next_line(fd, &line)) == 1)
 		printf("[%s]\n",line);
-//	while (1);
+	while (1);
 //	ac = 0;
 //	fd = open(av[1], O_RDONLY);
 //	fd2 = open(av[2], O_RDONLY);
